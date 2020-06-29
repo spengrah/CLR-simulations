@@ -66,9 +66,9 @@ def true_values(world):
     ])
 
     results = {
-        'true app value:': total_true_app_value,
-        'true lib value:': total_true_lib_value,
-        'lib value ratio:': lib_value_ratio
+        'true app value': total_true_app_value,
+        'true lib value': total_true_lib_value,
+        'lib value ratio': lib_value_ratio
     }
     return (results, world)
 
@@ -145,34 +145,17 @@ def run_simulation(params):
     return results, world3
 
 
-def multi_sim(params, param, sim_values):
-    # df = pd.DataFrame(columns=[param,
-    #                            'lib_value_ratio',
-    #                            'lib_matching_ratio',
-    #                            'lib_direct_funding_ratio'
-    #                            ])
-
-    # j = 0
-    # param_col = list()
-    # lib_value_ratio = list()
-    # lib_matching_ratio = list()
-    # lib_direct_funding_ratio = list()
-
-    result = []
+def multi_sim(params, sim_param, sim_values):
+    rows = []
 
     for i in sim_values:
-        params[param] = i
+        params[sim_param] = i
         results, _ = run_simulation(params)
-        result = result + [results['lib total funding ratio']]
-        # lib_matching_ratio[j] = results['lib matching ratio']
-        # lib_direct_funding_ratio[j] = results['lib direct funding ratio']
-        # j += 1
+        cells = [i] + [results[k] for k in results.keys()]
+        rows.append(cells)
 
-    # df.param_col = param_col
-    # df.lib_value_ratio = lib_value_ratio
-    # df.lib_matching_ratio = lib_matching_ratio
-    # df.lib_direct_funding_ratio = lib_direct_funding_ratio
+    columns = [sim_param] + list(results.keys())
 
-    return result
+    df = pd.DataFrame(data=rows, columns=columns).set_index(sim_param)
 
-    # return df
+    return df
